@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><meta charset="utf-8">
+		<style>
+			.d3p-info {
+				position: absolute;
+				bottom: 10px;
+				left: 10px;
+			}
+			.d3p-map {
+				position: relative;
+				overflow: hidden;
+			}
+			.d3p-layer {
+				position: absolute;
+			}
+			.d3p-tile {
+				position: absolute;
+				width: 256px;
+				height: 256px;
+			}
+								
+			#map {
+				position: absolute;	
+				left: 0px;
+				width: 60%;
+				top: 0px;
+				height: 100%;
+			}			
+		</style>
+		<script src="d3.v3.min.js"></script>
+		<script src="d3.geo.tile.v0.min.js"></script>
+		<script src="d3p.js"></script>		
+	</head>
+	<body>
+		<div id="map"></div>
+		<div id="map2"></div>
+		<script>
+			var map = new d3p("map",
+						{							
+							"center":[107.8, -6.1],
+							"zoomLevel":3,
+							"events":{"click":function(){
+											var ms = d3.mouse(this);
+											var pr = this.d3p.projection;
+											var g = this.d3p.lonlat2tile(pr.invert(ms),this.d3p.zoomLevel);	
+											var ioe = this.d3p.isObject;											
+											var data = this.d3p.getUtfGrid(this.d3p.zoomLevel,g);
+											
+											var text = "";
+											data.forEach(function(D) {			
+												if (ioe(D))
+												{
+													var tx = "";
+													d3.keys(D).forEach(function(d){						
+														tx += (tx == ""?"":", ")+D[d];
+													});					
+													text += tx+"<br>";
+												}	
+											});
+											
+											var info = d3.select("#"+this.d3p.name+" .d3p-map .d3p-info");
+											info.html(text);
+										}
+									},
+							"layers":[																
+								{
+									name:"world",
+									type:"tile",
+									urls:[/*"http://cara.amilna.com/tilep/world_style/{z}/{x}/{y}.png",*/
+									"http://cara.amilna.com/tilep/index.php?z={z}&x={x}&y={y}&xml=world_style"
+									]
+								},
+								{
+									name:"world-grid",
+									type:"utfgrid",
+									urls:[/*"http://cara.amilna.com/tilep/world_style/{z}/{x}/{y}.json",*/
+									"http://cara.amilna.com/tilep/index.php?z={z}&x={x}&y={y}&xml=world_style&type=utf"
+									]
+								}
+							]
+						}
+					);			
+			
+			var map2 = new d3p("map2",
+						{
+							//"center":[96, -6.1],
+							//"zoomLevel":4,
+							"style":{width:"40%",right:"0px"},
+							"events":{"click":function(){
+											var info = d3.select("#"+map2.name+" .d3p-map .d3p-info");
+											info.html("tes");
+										}
+									},
+							"layers":[
+								{
+									name:"lokal",
+									type:"tile",
+									urls:["http://otile1-s.mqcdn.com/tiles/1.0.0/osm/{z}/{x}/{y}.jpg"]
+									//urls:["https://iyo/tilep/index.php?z={z}&x={x}&y={y}&xml=world_style"]
+								}
+							]
+						}
+					);				
+			
+			map2.zoomTo([96, -6.1],4);		
+			
+			
+		</script>
+	</body>
+</html>	
+			
