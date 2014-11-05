@@ -33,5 +33,5 @@ Available options:<br>
 Wants to zoom to certain lonlat with certain zoomlevel? Just:  map.zoomTo([lonlat],zoomlevel)
 </p>
 
-for complete example just see index.html
+for complete example just see index.html or demo at http://cara.amilna.com/d3p/
 
