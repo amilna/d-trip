@@ -105,13 +105,11 @@ d3p = function(name,options) {
 	//this.onZoom(this);
 };
 
-var P = d3p.prototype;
-
-P.isObject = function(object) {
+d3p.prototype.isObject = function(object) {
 	return (typeof object != "undefined");
 };
 
-P.isUrl = function(url) {	
+d3p.prototype.isUrl = function(url) {	
    var http = new XMLHttpRequest();
     http.open('HEAD', url, false);
     try{
@@ -123,27 +121,27 @@ P.isUrl = function(url) {
     return (http.status==200?true:false);
 };
 
-P.toPix = function(str,ref) {
+d3p.prototype.toPix = function(str,ref) {
 	str += "";
 	return str.substr(str.length-1) == "%"?parseInt(str.replace("%",""))/100*ref:parseInt(str.replace("px",""));	
 };
 
-P.lon2xtile = function(lon,zoom)
+d3p.prototype.lon2xtile = function(lon,zoom)
 { 
 	return (lon+180)/360*Math.pow(2,zoom);
 };
 
-P.lat2ytile = function(lat,zoom)
+d3p.prototype.lat2ytile = function(lat,zoom)
 { 
 	return (1-Math.log(Math.tan(lat*Math.PI/180) + 1/Math.cos(lat*Math.PI/180))/Math.PI)/2 *Math.pow(2,zoom);
 };
 
-P.pix64 = function(n)
+d3p.prototype.pix64 = function(n)
 { 
 	return Math.floor((n-Math.floor(n))/1*64);
 };
 
-P.lonlat2tile = function(lonlat,zoom)
+d3p.prototype.lonlat2tile = function(lonlat,zoom)
 {	
 	var x = this.lon2xtile(lonlat[0],zoom);
 	var xp = this.pix64(x);	
@@ -152,24 +150,24 @@ P.lonlat2tile = function(lonlat,zoom)
 	return [Math.floor(x),Math.floor(y),xp,yp]; 
 };
 
-P.matrix3d = function(scale, translate) {
+d3p.prototype.matrix3d = function(scale, translate) {
 	var k = scale / 256, r = scale % 1 ? Number : Math.round;
 	return  "matrix3d(" + [k, 0, 0, 0, 0, k, 0, 0, 0, 0, k, 0, r(translate[0] * scale), r(translate[1] * scale), 0, 1 ] + ")";		
 };
 
-P.prefixMatch = function(p) {
+d3p.prototype.prefixMatch = function(p) {
 	var i = -1, n = p.length, s = document.body.style;
 	while (++i < n) if (p[i] + "Transform" in s) return "-" + p[i].toLowerCase() + "-";
 	return "";
 };
 
-P.formatLocation = function(p, k) {
+d3p.prototype.formatLocation = function(p, k) {
 	var format = d3.format("." + Math.floor(Math.log(k) / 2 - 2) + "f");
 	return (p[1] < 0 ? format(-p[1]) + "°S" : format(p[1]) + "°N") + " "
 			+ (p[0] < 0 ? format(-p[0]) + "°W" : format(p[0]) + "°E");
 };
 
-P.zoomTo = function(point,zoomLevel) {			
+d3p.prototype.zoomTo = function(point,zoomLevel) {			
 	var d3p = this;
 	
 	var pr = d3p.projection;
@@ -192,7 +190,7 @@ P.zoomTo = function(point,zoomLevel) {
 	d3p.onZoom(d3p);
 };
 
-P.addLayer = function() {
+d3p.prototype.addLayer = function() {
 	var d3p = this;
 		
 	this.layers.forEach(function(l) {		
@@ -202,7 +200,7 @@ P.addLayer = function() {
 	});	
 };
 
-P.getUtfGrid = function(z,g) {
+d3p.prototype.getUtfGrid = function(z,g) {
 	var data = [];
 	
 	this.layers.forEach(function(l) {
@@ -229,7 +227,7 @@ P.getUtfGrid = function(z,g) {
 };
 
 
-P.mouseMove = function() {		
+d3p.prototype.mouseMove = function() {		
 	
 	var pr = this.d3p.projection;
 	var ms = d3.mouse(this);		
@@ -269,7 +267,7 @@ P.mouseMove = function() {
 	info.html(text+"<br>"+this.d3p.formatLocation(pr.invert(ms), this.d3p.zoom.scale()));
 };
 
-P.onZoom = function(d3p) {	
+d3p.prototype.onZoom = function(d3p) {	
 	var d3p = (typeof d3p == "undefined"?this.d3p:d3p);			 
 	    
     var sz = d3p.size; 
@@ -288,7 +286,7 @@ P.onZoom = function(d3p) {
 	//console.log(d3p.center);
 };	
 
-P.draw = function(d3p) {
+d3p.prototype.draw = function(d3p) {
 	
 	var d3p = (typeof d3p == "undefined"?this.d3p:d3p);	    
     
